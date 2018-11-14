@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QPointF>
 #include <QResizeEvent>
 #include <QGroupBox>
 #include <QVector>
@@ -40,7 +41,7 @@ private:
     void drawPoints();
     void drawLines();
     void drawPoly();
-    void generateRandomPoints(unsigned int points);
+    void generateRandomPoints(int points);
     void createPoly();
     void connectPoints();
     void connects();

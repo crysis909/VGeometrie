@@ -48,7 +48,7 @@ void Widget::createSliderGroupBox()
     QHBoxLayout *layout = new QHBoxLayout;
 
     vSlider->setMinimum(2);
-    vSlider->setMaximum(100);
+    vSlider->setMaximum(200);
     vSlider->setSingleStep(2);
 
     layout->addWidget(lblSlider);
@@ -129,8 +129,7 @@ void Widget::connectPoints()
 
 void Widget::createPoly()
 {
-    polygon.clear();
-    std::sort(points.begin(), points.end()); //Dummy function
+    std::sort(points.begin(), points.end());
 
     for(QPointF *point : points)
         polygon << *point;
@@ -169,18 +168,11 @@ void Widget::drawLines()
 void Widget::drawPoly()
 {
     if(!polygon.empty())
-    {
-        int i = 0;
-        scene->addPolygon(polygon);
         for(QPointF point : polygon)
         {
-            QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(i + 1));
-            text->setPos(point);
-            text->setScale(1.5);
-            scene->addItem(text);
-            i++;
+            scene->addLine(*point);
         }
-    }
+
 }
 
 void Widget::clearVectors()
@@ -194,7 +186,7 @@ void Widget::clearVectors()
     lines.clear();
 
     for(auto poly : polygon)
-        delete &poly;
+        delete poly;
     polygon.clear();
 }
 

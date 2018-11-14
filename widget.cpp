@@ -47,8 +47,7 @@ void Widget::createSliderGroupBox()
     vSlider = new QSlider(Qt::Horizontal);
     QHBoxLayout *layout = new QHBoxLayout;
 
-    vSlider->setMinimum(2);
-    vSlider->setMaximum(100);
+    vSlider->setRange(2, 100);
     vSlider->setSingleStep(2);
 
     layout->addWidget(lblSlider);
@@ -103,8 +102,8 @@ void Widget::generateRandomPoints(int points)
     {
         QRandomGenerator64 random = QRandomGenerator64::securelySeeded();
 
-        int x = random.bounded(0, scene->width());
-        int y = random.bounded(0, scene->height());
+        int x = random.bounded(0, scene->width() - 50);
+        int y = random.bounded(0, scene->height() - 50);
 
         QPointF *point = new QPointF(x,y);
         this->points.push_back(point);

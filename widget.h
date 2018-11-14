@@ -6,10 +6,13 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QResizeEvent>
+#include <QGroupBox>
 #include <QVector>
 #include <QRandomGenerator64>
 #include <QPushButton>
 #include <QSlider>
+#include <QLabel>
+
 
 namespace Ui {
 class Widget;
@@ -27,26 +30,39 @@ public:
 protected slots:
     void onGenerate();
     void onOutline();
+
 private:
     void init();
-    void clearVectors();
+    void createBtnGroupBox();
+    void createSliderGroupBox();
+
     void draw();
+    void drawPoints();
+    void drawLines();
+    void drawPoly();
     void generateRandomPoints(unsigned int points);
     void createPoly();
     void connectPoints();
     void connects();
+
+    void clearVectors();
+
     virtual void resizeEvent(QResizeEvent *event);
 
 //Variable
 private:
     //UI
     Ui::Widget *ui;
-    QGridLayout *mainLayout;
-    QHBoxLayout *sideLayout;
+    QHBoxLayout *mainLayout;
+    QVBoxLayout *sideLayout;
+    QGroupBox *btnGroupBox;
+    QGroupBox *sliderGroupBox;
+
     QGraphicsScene *scene;
     QGraphicsView *view;
     QPushButton *btnGenerate;
     QPushButton *btnOutline;
+    QLabel *lblSlider;
     QSlider *vSlider;
 
     //Other
@@ -55,10 +71,6 @@ private:
     QPolygonF polygon;
 
     const int diameter = 4;
-
-
-
-
 };
 
 #endif // WIDGET_H

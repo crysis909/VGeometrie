@@ -21,53 +21,77 @@ Widget::~Widget()
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
+    view->setSceneRect(0,0,view->width(),view->height());
     scene->setSceneRect(view->sceneRect());
+    view->fitInView(0,0,view->width(),view->height(), Qt::KeepAspectRatioByExpanding);
     QWidget::resizeEvent(event);
+}
 
-    qDebug() << view->sceneRect() << " " << scene->sceneRect();
+void Widget::createBtnGroupBox()
+{
+    btnGroupBox = new QGroupBox("Functions");
+    btnGenerate = new QPushButton("Generate");
+    btnOutline = new QPushButton("Outline");
+    QHBoxLayout *layout = new QHBoxLayout;
+
+    layout->addWidget(btnGenerate);
+    layout->addWidget(btnOutline);
+
+    btnGroupBox->setLayout(layout);
+}
+
+void Widget::createSliderGroupBox()
+{
+    sliderGroupBox = new QGroupBox("Points");
+    lblSlider = new QLabel("2");
+    vSlider = new QSlider(Qt::Horizontal);
+    QHBoxLayout *layout = new QHBoxLayout;
+
+    vSlider->setMinimum(2);
+    vSlider->setMaximum(200);
+    vSlider->setSingleStep(2);
+
+    layout->addWidget(lblSlider);
+    layout->addWidget(vSlider);
+
+    sliderGroupBox->setLayout(layout);
 }
 
 void Widget::init()
 {
     //Layout
-    mainLayout = new QGridLayout(this);
-    sideLayout = new QHBoxLayout();
-
-    //Buttons
-    btnGenerate = new QPushButton("Generate");
-    btnOutline = new QPushButton("Outline");
-
-    //Extra
-    vSlider = new QSlider(Qt::Horizontal);
+    mainLayout = new QHBoxLayout(this);
+    sideLayout = new QVBoxLayout();
 
     //GView
     scene = new QGraphicsScene();
     view = new QGraphicsView(scene);
 
+    //GroupBox
+    createBtnGroupBox();
+    createSliderGroupBox();
+
     //Properties
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    vSlider->setMinimum(0);
-    vSlider->setMaximum(100);
-    vSlider->setTickInterval(2);
+    sideLayout->addWidget(btnGroupBox);
+    sideLayout->addWidget(sliderGroupBox);
+    sideLayout->setAlignment(Qt::AlignTop);
 
-    sideLayout->addWidget(btnGenerate);
-    sideLayout->addWidget(btnOutline);
+    mainLayout->addWidget(view);
+    mainLayout->addLayout(sideLayout);
 
-    mainLayout->addWidget(view,0,0,mainLayout->rowCount(),1);
-    mainLayout->addLayout(sideLayout,0,3);
-    mainLayout->addWidget(vSlider,1,3);
-
-    scene->setSceneRect(view->rect());
-
+    setWindowTitle("Geometry");
     setLayout(mainLayout);
+    resize(sizeHint());
 }
 
 void Widget::connects()
 {
     connect(btnGenerate, SIGNAL(pressed()), this, SLOT(onGenerate()));
     connect(btnOutline, SIGNAL(pressed()), this, SLOT(onOutline()));
+    connect(vSlider, SIGNAL(valueChanged(int)), lblSlider, SLOT(setNum(int)));
 }
 
 void Widget::generateRandomPoints(unsigned int points)
@@ -105,12 +129,19 @@ void Widget::connectPoints()
 
 void Widget::createPoly()
 {
-    std::sort(points.begin(),points.end());
+    std::sort(points.begin(), points.end());
+
     for(QPointF *point : points)
         polygon << *point;
 }
 
 void Widget::draw()
+{
+    drawPoints();
+    drawLines();
+}
+
+void Widget::drawPoints()
 {
     if(!points.empty())
     {
@@ -118,20 +149,27 @@ void Widget::draw()
         for(QPointF *point : points)
         {
             scene->addEllipse(point->rx() - diameter / 2, point->ry() - diameter / 2, diameter, diameter);
-            QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(i));
+            QGraphicsTextItem *text = new QGraphicsTextItem(QString::number(i + 1));
             text->setPos(*point);
             text->setScale(1.5);
             scene->addItem(text);
             i++;
         }
     }
+}
 
+void Widget::drawLines()
+{
     if(!lines.empty())
         for(QLineF *line : lines)
             scene->addLine(*line);
+}
 
-    if(!polygon.empty())
-        scene->addPolygon(polygon);
+void Widget::drawPoly()
+{
+    if(!lines.empty())
+        for(QLineF *line : lines)
+            scene->addLine(*line);
 }
 
 void Widget::clearVectors()
@@ -159,6 +197,8 @@ void Widget::onGenerate()
 
 void Widget::onOutline()
 {
-//    createPoly();
-//    draw();
+    scene->clear();
+
+    createPoly();
+    drawPoly();
 }

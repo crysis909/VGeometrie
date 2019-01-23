@@ -8,6 +8,7 @@
 *.so
 *.dll
 *.dylib
+*.cpp.*
 
 # Qt-es
 object_script.*.Release
@@ -28,6 +29,7 @@ ui_*.h
 *.jsc
 Makefile*
 *build-*
+*.autosave*
 
 # Qt unit tests
 target_wrapper.*
@@ -41,3 +43,4 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
+*.user

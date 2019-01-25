@@ -100,6 +100,7 @@ private:
     QVector<QLineF*> lines;
     QVector<QGraphicsEllipseItem*> pointsItem;
     QVector<QGraphicsLineItem*> linesItem;
+    QGraphicsLineItem *prev = nullptr;
     QPolygonF polygon;
 
     const int diameter = 4;

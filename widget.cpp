@@ -170,25 +170,25 @@ void Widget::connectPoints()
 
 bool Widget::sortByAngle()
 {
-    //Nähersten Punkt finden (0,0) -> Linie zu jedem Punkt und den Winkel messen
-    QPointF *topLeft = points[0];
-    for(QPointF *point : points)
-    {
-        if(point->rx() < topLeft->rx() && point->ry() < topLeft->ry())
-            topLeft = point;
-    }
+//    //Nähersten Punkt finden (0,0) -> Linie zu jedem Punkt und den Winkel messen
+//    QPointF *topLeft = points[0];
+//    for(QPointF *point : points)
+//    {
+//        if(point->rx() < topLeft->rx() && point->ry() < topLeft->ry())
+//            topLeft = point;
+//    }
 
-    for(int x = 0; x < points.size(); x++)
-    {
-        if(topLeft != points[x])
-        {
-            QLineF *line = new QLineF(*topLeft, *points[x]);
+//    for(int x = 0; x < points.size(); x++)
+//    {
+//        if(topLeft != points[x])
+//        {
+//            QLineF *line = new QLineF(*topLeft, *points[x]);
 
-            qDebug() << line->angle();
+//            qDebug() << line->angle();
 
-            delete line;
-        }
-    }
+//            delete line;
+//        }
+//    }
 }
 
 void Widget::createPoly()
@@ -286,7 +286,7 @@ void Widget::onGenerate()
     spinPoint1->setEnabled(true);
     spinPoint2->setEnabled(true);
 
-    spinPoint->setMinimum(1);
+    spinPoint->setMinimum(0);
     spinPoint->setMaximum(lines.length());
 
     spinPoint1->setMinimum(1);
@@ -318,18 +318,20 @@ void Widget::onExchange()
 
 void Widget::selectLine(int value)
 {
-    QGraphicsLineItem *lineItem = linesItem[value - 1];
+    if(value == 0)
+        return;
 
-    if(value - 1 > 0)
-    {
-        QGraphicsLineItem *prev = linesItem[value -  2];
+    if(prev)
         prev->setPen(QPen(Qt::black));
-    }
+
+    QGraphicsLineItem *lineItem = linesItem[value - 1];
 
     QString angle = QString::number(lineItem->line().angle());
     lblAngle->setText(angle + "°");
 
     QPen pen(Qt::red, 5, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
     lineItem->setPen(pen);
+
+    prev = lineItem;
 }
 
